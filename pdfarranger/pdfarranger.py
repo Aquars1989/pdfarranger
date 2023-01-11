@@ -237,7 +237,7 @@ class PdfArranger(Gtk.Application):
         self.is_unsaved = False
         self.zoom_level = None
         self.zoom_level_old = 0
-        self.zoom_level_limits = [-10, 40]
+        self.zoom_level_limits = [-50, 40]
         self.zoom_scale = None
         self.zoom_fit_page = False
         self.render_id = None
@@ -563,7 +563,7 @@ class PdfArranger(Gtk.Application):
         self.iconview.set_item_width(-1)
 
         self.cellthmb = CellRendererImage()
-        self.cellthmb.set_padding(3, 3)
+        self.cellthmb.set_padding(0, 0)
         self.cellthmb.set_alignment(0.5, 0.5)
         self.iconview.pack_start(self.cellthmb, False)
         self.iconview.set_cell_data_func(self.cellthmb, self.set_cellrenderer_data, None)
@@ -896,18 +896,18 @@ class PdfArranger(Gtk.Application):
                 cell_height = item_height + 2 * cellthmb_ypad + border_and_shadow
             self.cellthmb.set_fixed_size(cell_width, cell_height)
             padded_cell_width = cell_width + 2 * item_padding
-            min_col_spacing = 5
-            min_margin = 11
+            min_col_spacing = 0
+            min_margin = 0
             iw_width = self.sw.get_allocation().width
             # 2 * min_margin + col_num * padded_cell_width
             #  + min_col_spacing * (col_num+1) = iw_width
             col_num = (iw_width - 2 * min_margin - min_col_spacing) //\
                       (padded_cell_width + min_col_spacing)
-            spacing = (iw_width - col_num * padded_cell_width - 2 * min_margin) // (col_num + 1)
+            spacing = 0#(iw_width - col_num * padded_cell_width - 2 * min_margin) // (col_num + 1)
             margin = (iw_width - col_num * (padded_cell_width + spacing) + spacing) // 2
-            if col_num == 0:
-                col_num = 1
-                margin = 6
+            if col_num < 2:
+                col_num = 2
+                #margin = 6
             self.iconview.set_columns(col_num)
             self.iconview.set_column_spacing(spacing)
             self.iconview.set_margin(margin)
@@ -2074,7 +2074,7 @@ class PdfArranger(Gtk.Application):
         """Update upper zoom level limit so thumbnails are max 6000000 pixels."""
         if len(self.model) == 0:
             return
-        max_pixels = 6000000  # 6000000 pixels * 4 byte/pixel -> 23Mb
+        max_pixels = 60000000  # 6000000 pixels * 4 byte/pixel -> 23Mb
         max_page_size = max(p.size[0] * p.size[1] * p.scale ** 2 for p, _ in self.model)
         max_zoom_scale = (max_pixels / max_page_size) ** .5
         self.zoom_level_limits[1] = min(int(log(max_zoom_scale / .2) / log(1.1)), 40)

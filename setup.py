@@ -44,7 +44,7 @@ setup(
     zip_safe=False,
     cmdclass={
         "build": build_extra.build_extra,
-        "build_i18n": build_i18n.build_i18n,
+        #"build_i18n": build_i18n.build_i18n,
         "clean_i18n": clean_i18n.clean_i18n,
         "build_icons": build_icons.build_icons,
     },
